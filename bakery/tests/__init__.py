@@ -511,8 +511,8 @@ class BakeryTest(TestCase):
         )
 
     def test_cache_control(self):
-        s3 = boto3.resource('s3')
         with mock_s3():
+            s3 = boto3.resource('s3')
             # Set random max-age for various content types
             with self.settings(BAKERY_CACHE_CONTROL={
                 "application/javascript": random.randint(0, 100000),
@@ -537,14 +537,14 @@ class BakeryTest(TestCase):
                         )
 
     def test_batch_unpublish(self):
-        s3 = boto3.resource('s3')
         with mock_s3():
+            s3 = boto3.resource('s3')
             self._create_bucket()
             keys = []
             for i in range(0, 377):
                 key = str(i)
                 obj = s3.Object(settings.AWS_BUCKET_NAME, key)
-                obj.put('This is test object %s' % i)
+                obj.put(Body='This is test object %s' % i)
                 keys.append(key)
             call_command("unpublish", verbosity=3)
             self.assertFalse(self._get_bucket_objects())
@@ -588,14 +588,14 @@ class BakeryTest(TestCase):
         self.assertEqual(s3_resource.meta.client._endpoint.host, 'http://example.com')
 
     def test_get_all_objects_in_bucket(self):
-        s3 = boto3.resource('s3')
         with mock_s3():
+            s3 = boto3.resource('s3')
             self._create_bucket()
             keys = []
             for i in range(0, 33):
                 key = str(i)
                 obj = s3.Object(settings.AWS_BUCKET_NAME, key)
-                obj.put('This is test object %s' % i)
+                obj.put(Body='This is test object %s' % i)
                 keys.append(key)
             all_objects = get_all_objects_in_bucket(
                 settings.AWS_BUCKET_NAME,
@@ -608,14 +608,14 @@ class BakeryTest(TestCase):
             self.assertEqual(len(keys), len(all_objects))
 
     def test_batch_delete_s3_objects(self):
-        s3 = boto3.resource('s3')
         with mock_s3():
+            s3 = boto3.resource('s3')
             self._create_bucket()
             keys = []
             for i in range(0, 33):
                 key = str(i)
                 obj = s3.Object(settings.AWS_BUCKET_NAME, key)
-                obj.put('This is test object %s' % i)
+                obj.put(Body='This is test object %s' % i)
                 keys.append(key)
 
             all_objects = self._get_bucket_objects()
