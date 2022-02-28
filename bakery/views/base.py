@@ -5,7 +5,6 @@ Views that inherit from Django's class-based generic views and add methods
 for building flat files.
 """
 from __future__ import unicode_literals
-import os
 import six
 import sys
 import gzip
@@ -147,9 +146,9 @@ class BuildableTemplateView(TemplateView, BuildableMixin):
         logger.debug("Building %s" % self.template_name)
         build_path = self.get_build_path()
         self.request = self.create_request(build_path)
-        path = os.path.join(settings.BUILD_DIR, build_path)
+        joined_path = path.combine(settings.BUILD_DIR, build_path)
         self.prep_directory(build_path)
-        self.build_file(path, self.get_content())
+        self.build_file(joined_path, self.get_content())
 
     def get_build_path(self):
         return six.text_type(self.build_path).lstrip('/')
@@ -201,9 +200,9 @@ class BuildableRedirectView(RedirectView, BuildableMixin):
             self.get_redirect_url()
         ))
         self.request = self.create_request(self.build_path)
-        path = os.path.join(settings.BUILD_DIR, self.build_path)
+        joined_path = path.join(settings.BUILD_DIR, self.build_path)
         self.prep_directory(self.build_path)
-        self.build_file(path, self.get_content())
+        self.build_file(joined_path, self.get_content())
 
     def get_redirect_url(self, *args, **kwargs):
         """
