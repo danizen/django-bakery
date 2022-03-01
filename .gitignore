@@ -8,6 +8,7 @@ dist/*
 *.pyc
 *.swp
 .DS_Store
+.idea/
 example/db.sqlite3
 example/.build
 example/.static
